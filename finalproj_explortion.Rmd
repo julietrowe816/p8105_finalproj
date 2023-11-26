@@ -1,0 +1,19 @@
+---
+title: "finalproj_exploration"
+author: "Juliet Rowe"
+date: "2023-11-26"
+output: github_document
+---
+
+Load libraries
+```{r}
+library(tidverse)
+
+```
+
+Load data
+```{r}
+rat_sightings <- read.csv("data/Rat_Sightings_20231121.csv") |>
+  janitor::clean_names()
+```
+
