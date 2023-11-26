@@ -7,7 +7,7 @@ output: github_document
 
 Load libraries
 ```{r}
-library(tidverse)
+library(tidyverse)
 
 ```
 
