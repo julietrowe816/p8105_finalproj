@@ -14,24 +14,30 @@ library(ggplot2)
 
 Load rat data
 ```{r}
-rat_sightings <- read.csv("data/Rat_Sightings_20231121.csv") |>
-  janitor::clean_names() |>
-    separate(closed_date, into = c("month", "day", "year_date"), sep = "/") |>
-  separate(year_date, into = c("year", "time"), sep = " ") |>  
-  select(-created_date, -agency, -agency_name, -complaint_type, -descriptor, -landmark, -facility_type, -park_facility_name, -vehicle_type, -taxi_company_borough, -taxi_pick_up_location, -bridge_highway_name, -road_ramp, -bridge_highway_segment, -bridge_highway_direction) |>  
-  mutate(year = as.numeric(as.character(year)), month = as.numeric(as.character(month)), day = as.numeric(as.character(day)))
+sightings = read_csv('data/Rat_Sightings_20231121.csv') |> 
 
-rat_sightings <- rat_sightings |>
-  filter(year == 2016 & month >=1) | (year >= 2016 & year <= 2023) | (year == 2023 & month <=11) 
+  janitor::clean_names() |> 
+
+  separate(created_date, into=c("month","e", "day","f", "year", "g", "time"), sep=c(2,3,5,6,10,11)) |> 
+
+  select(-e,-f,-g) |> 
+
+  mutate(date = paste(year, month, day, sep=""), 
+
+         date = as.numeric(date)) |>  
+
+  filter(date <= 20231031, date >= 20160101, !incident_zip <= 10000, !incident_zip >11697, !borough %in% c("Unspecified", NA)) |> 
+
+  select(-agency, -agency_name, -complaint_type, -descriptor, -landmark, -facility_type, -park_facility_name, -vehicle_type, -taxi_company_borough, -taxi_pick_up_location, -bridge_highway_name, -road_ramp, -bridge_highway_segment, -bridge_highway_direction) |> select(unique_key, date, year, month, day, everything())
 ```
 
 
 Load weather data
 ```{r}
-  rnoaa::meteo_pull_monitors(
+weather_df = rnoaa::meteo_pull_monitors(
     c("USW00094728"),
     var = c("PRCP", "TMIN", "TMAX"), 
-    date_min = "2022-01-01",
+    date_min = "2016-01-01",
     date_max = "2022-12-31") |>
   mutate(
     name = recode(id, USW00094728 = "CentralPark_NY"),
@@ -44,7 +50,14 @@ Load weather data
 
 Rat sightings by latitude and longitude
 ```{r}
-rat_sightings |>
-  ggplot(aes(x=-latitude, y=longitude)) + geom_point()
+
+```
+
+Merge weather and rate data
+```{r}
+sightings$date <- as.Date(as.character(sightings$date), format = "%Y%m%d")
+
+rat_weather =
+  right_join(sightings, weather_df, by="date")
 ```
 
