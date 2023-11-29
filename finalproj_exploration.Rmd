@@ -64,3 +64,21 @@ rat_weather |>
   geom_point(alpha = 0.25) 
 ```
 
+
+Rat sightings versus precipitation
+```{r}
+
+rat_weather |>
+  filter(prcp != 1811) |>
+  mutate(prcp = as.factor(prcp)) |>
+  group_by(date, prcp) |>
+  summarize(count = n()) |>
+  mutate(prcp_numeric = as.numeric(as.character(prcp))) |>
+  ggplot(aes(x = prcp_numeric, y = count)) +
+  geom_point(alpha = 0.25) +
+  geom_smooth(method = "glm", formula = y ~ x, se = FALSE) +
+  scale_x_continuous(breaks = unique(as.numeric(as.character(rat_weather$prcp))),
+                     labels = unique(rat_weather$prcp))
+
+```
+
