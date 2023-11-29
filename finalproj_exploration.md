@@ -28,19 +28,12 @@ Load rat data
 
 ``` r
 sightings = read_csv('data/Rat_Sightings_20231121.csv') |> 
-
   janitor::clean_names() |> 
-
   separate(created_date, into=c("month","e", "day","f", "year", "g", "time"), sep=c(2,3,5,6,10,11)) |> 
-
   select(-e,-f,-g) |> 
-
   mutate(date = paste(year, month, day, sep=""), 
-
          date = as.numeric(date)) |>  
-
   filter(date <= 20231031, date >= 20160101, !incident_zip <= 10000, !incident_zip >11697, !borough %in% c("Unspecified", NA)) |> 
-
   select(-agency, -agency_name, -complaint_type, -descriptor, -landmark, -facility_type, -park_facility_name, -vehicle_type, -taxi_company_borough, -taxi_pick_up_location, -bridge_highway_name, -road_ramp, -bridge_highway_segment, -bridge_highway_direction) |> select(unique_key, date, year, month, day, everything())
 ```
 
@@ -90,3 +83,27 @@ sightings$date <- as.Date(as.character(sightings$date), format = "%Y%m%d")
 rat_weather =
   right_join(sightings, weather_df, by="date")
 ```
+
+Rat sightings per day
+
+``` r
+rat_weather |>
+  mutate(year = as.factor(year)) |>
+  group_by(date) |>
+  summarize(count = n(), year) |>  
+  ggplot(aes(x = date, y = count, color=year)) +
+  geom_point(alpha = 0.25) 
+```
+
+    ## Warning: Returning more (or less) than 1 row per `summarise()` group was deprecated in
+    ## dplyr 1.1.0.
+    ## ℹ Please use `reframe()` instead.
+    ## ℹ When switching from `summarise()` to `reframe()`, remember that `reframe()`
+    ##   always returns an ungrouped data frame and adjust accordingly.
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+    ## `summarise()` has grouped output by 'date'. You can override using the
+    ## `.groups` argument.
+
+![](finalproj_exploration_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
