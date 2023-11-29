@@ -93,9 +93,7 @@ rat_weather |>
 trying somethin
 ```{r}
 rat_weather |>
-  filter(prcp != 1811) |>
-  mutate(prcp = as.factor(prcp)) |>
-  group_by(date, prcp) |>
+  group_by(date) |>
   summarize(count = n(), year, tmax) |>
   ggplot(aes(x = tmax, y = count, color = year)) + 
   geom_point(alpha = .3) +
@@ -106,3 +104,16 @@ rat_weather |>
 
 ```
 
+ by month
+```{r}
+rat_weather |>
+  group_by(month) |>
+  summarize(count = n(), month, tmax) |>
+  ggplot(aes(x = tmax, y = count, color = month)) + 
+  geom_point(alpha = .3) +
+  geom_smooth(se = FALSE) + 
+  facet_grid(. ~ month)
+
+```
+ 
+ 
