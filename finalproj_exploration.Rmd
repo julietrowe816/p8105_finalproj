@@ -41,24 +41,38 @@ weather_df = rnoaa::meteo_pull_monitors(
 ```
 
 
-
-Rat sightings by latitude and longitude
-```{r}
-rat_weather |>
-  filter(borough=="MANHATTAN") |>
-  group_by(date) |>
-  sample_n(10000) |> 
-  plot_ly(x = ~longitude, y = ~latitude, type = "scatter", mode = "markers", color = ~tmax, alpha=0.7)
-```
-
-
-Merge weather and rate data
+Merge weather and rat data
 ```{r}
 sightings$date <- as.Date(as.character(sightings$date), format = "%Y%m%d")
 
 rat_weather =
   right_join(sightings, weather_df, by="date")
 ```
+
+
+
+Rat sightings by latitude and longitude
+```{r}
+
+
+plot_ly(rat_weather, x = ~longitude, y = ~latitude, type = "scatter", mode = "markers",
+        color = ~borough, colors = c("blue", "red", "green", "purple", "orange")) |>
+  layout(title = "Rat Sightings by Latitude and Longitude",
+         xaxis = list(title = "Longitude"),
+         yaxis = list(title = "Latitude"))
+
+
+
+rat_weather |>
+  filter(borough == "MANHATTAN") |>
+  sample_n(10000) |> 
+  plot_ly(x = ~longitude, y = ~latitude, type = "scatter", mode = "markers",
+        color = ~tmax, alpha=0.8) |>
+  layout(title = "Rat Sightings by Latitude, Longitude, and Maximum Temperature",
+         xaxis = list(title = "Longitude"),
+         yaxis = list(title = "Latitude"))
+```
+
 
 
 Rat sightings per day
@@ -68,7 +82,10 @@ rat_weather |>
   group_by(date) |>
   summarize(count = n(), year) |>  
   ggplot(aes(x = date, y = count, color=year)) +
-  geom_point(alpha = 0.25) 
+  geom_point(alpha = 0.25) + 
+  labs(title = "Time Series: Rat Sightings Over Time",
+       x = "Date",
+       y = "Number of Rat Sightings")
 ```
 
 
@@ -85,20 +102,26 @@ rat_weather |>
   geom_point(alpha = 0.25) +
   geom_smooth(method = "glm", formula = y ~ x, se = FALSE) +
   scale_x_continuous(breaks = unique(as.numeric(as.character(rat_weather$prcp))),
-                     labels = unique(rat_weather$prcp))
+                     labels = unique(rat_weather$prcp)) +
+  labs(title = "Scatter Plot: Precipitation vs. Rat Sightings",
+       x = "Precipitation (inches)",
+       y = "Number of Rat Sightings")
 
 ```
 
 
-trying somethin
+by year
 ```{r}
 rat_weather |>
   group_by(date) |>
   summarize(count = n(), year, tmax) |>
   ggplot(aes(x = tmax, y = count, color = year)) + 
   geom_point(alpha = .3) +
-  geom_smooth(se = FALSE) + 
-  facet_grid(. ~ year)
+  geom_smooth(se = FALSE, color="black") + 
+  facet_grid(. ~ year) +
+  labs(title = "Maximum Temperature vs. Rat Sightings by Year",
+       x = "Maximum temperature (degrees Celsius)",
+       y = "Number of Rat Sightings")
 
 
 
@@ -112,7 +135,10 @@ rat_weather |>
   ggplot(aes(x = tmax, y = count, color = month)) + 
   geom_point(alpha = .3) +
   geom_smooth(se = FALSE) + 
-  facet_grid(. ~ month)
+  facet_grid(. ~ month) +
+  labs(title = "Maximum Temperature vs. Rat Sightings by Month",
+       x = "Maximum temperature (degrees Celsius)",
+       y = "Number of Rat Sightings")
 
 ```
  
