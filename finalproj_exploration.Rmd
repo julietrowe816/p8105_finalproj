@@ -53,10 +53,10 @@ rat_weather =
 
 Rat sightings by latitude and longitude
 ```{r}
-
-
-plot_ly(rat_weather, x = ~longitude, y = ~latitude, type = "scatter", mode = "markers",
-        color = ~borough, colors = c("blue", "red", "green", "purple", "orange")) |>
+rat_weather |>
+  sample_n(10000) |>
+  plot_ly(x = ~longitude, y = ~latitude, type = "scatter", mode = "markers",
+        color = ~borough, colors = c("blue", "red", "green", "purple", "orange")) |> 
   layout(title = "Rat Sightings by Latitude and Longitude",
          xaxis = list(title = "Longitude"),
          yaxis = list(title = "Latitude"))
