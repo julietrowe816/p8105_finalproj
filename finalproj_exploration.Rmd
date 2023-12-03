@@ -49,7 +49,7 @@ rat_weather =
   right_join(sightings, weather_df, by="date")
 ```
 
-
+Other interesting variables to explore as they relate to rat sightings include weather conditions. Specifically, temperature and precipitation can impact rat behavior and movement. Rats may be more active during certain weather conditions, seeking shelter or food. Understanding how weather conditions influence rat behavior can help identify high-risk periods for increased rat activity. Policy-makers such as the Rat Czar can use this information to allocate resources and implement targeted interventions during these times. Moreover, as climate change leads to shift in weather patterns, it will become even more important to adapt rat-control strategies to changing environmental conditions. 
 
 Rat sightings by latitude and longitude
 ```{r}
@@ -72,7 +72,7 @@ rat_weather |>
          xaxis = list(title = "Longitude"),
          yaxis = list(title = "Latitude"))
 ```
-
+The above plot shows a random sample of 10,000 rat sightings in Manhattan from 2017-2022. The plot points are colored according to maximum temperature during each rat sighting. From this plot, we can gather that the majority of rat sightings occur in the upper half of Manhattan, as the dots are much more densely packed in that area, and that most sightings occur during higher temperatures. 
 
 
 Rat sightings per day
@@ -108,7 +108,7 @@ rat_weather |>
        y = "Number of Rat Sightings")
 
 ```
-
+In this plot we can see an inverse relationship between precipitation and rat sightings. This could mean that rats are less active during periods of rain, potentially preferring to stay in sheltered areas, or that people are also less likely to go outside during times of high precipitation, leading them to not see as many rats. 
 
 by year
 ```{r}
@@ -127,6 +127,7 @@ rat_weather |>
 
 ```
 
+
  by month
 ```{r}
 rat_weather |>
@@ -141,5 +142,6 @@ rat_weather |>
        y = "Number of Rat Sightings")
 
 ```
- 
+The two above plots shows the number of rat sightings against maximum temperature, first faceted by year, and then by month. Overall, we see an increase in number of rat sightings over the year, as well as a peak in number of sightings around 25 degrees Celsius. This provides evidence for increased pest-control interventions during the warmer months, and an even greater concern for increased temperatures caused by climate change.
+
  
